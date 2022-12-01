@@ -18,35 +18,34 @@ function App() {
     setIsLoading(true);
 
     try {
-      axios
-        .get(`/api?url=${encodeURIComponent(currURL)}`)
-        .then((response) => {
-          console.log(response.data);
-          setData(data.data);
-          setIsLoading(false);
-        })
-        .catch(function (error) {
-          setErr(error);
-          setIsLoading(false);
-        });
-      // const response = await fetch(`/api?url=${encodeURIComponent(currURL)}`, {
-      //   method: "GET",
-      //   headers: {
-      //     Accept: "application/json",
-      //   },
-      // })
-      //   .then((res) => {
-      //     var results = res.json();
-      //     console.log(results.data);
+      // axios
+      //   .get(`/api?url=${encodeURIComponent(currURL)}`)
+      //   .then((response) => {
+      //     console.log(response.data);
+      //     setData(data.data);
       //     setIsLoading(false);
       //   })
-      //   .then((data) => {
-      //     console.log(data);
-      //     // setData(data.data);
-      //     console.log("result is: ", JSON.stringify(data));
+      //   .catch(function (error) {
+      //     setErr(error);
       //     setIsLoading(false);
-      //     //console.log(result);
       //   });
+      const response = await fetch(`/api?url=${encodeURIComponent(currURL)}`, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+        },
+      })
+        .then((data) => data.json())
+        .then((data) => {
+          console.log(data);
+          setIsLoading(false);
+          setData(data);
+        })
+        .catch((error) => {
+          console.error(error);
+          setIsLoading(false);
+          setData(data);
+        });
 
       // if (!response.ok) {
       //   throw new Error(`Error! status: ${response.status}`);
@@ -65,14 +64,14 @@ function App() {
         <img src={logo} className="App-logo" alt="logo" />
         <p>{!isLoading ? "Loading..." : "Done!"}</p>
         <p>Current URL: {currURL}</p>
-        <p>Errors: {err}</p>
+        {err && <p>Errors: {err}</p>}
         <input
           type="text"
           id="message"
           name="message"
           onChange={handleURLChange}
         />
-
+        {data && <p>{data}</p>}
         <button onClick={handleClick}>Fetch data</button>
       </header>
     </div>

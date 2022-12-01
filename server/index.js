@@ -54,11 +54,7 @@ app.get("/api", (req, res) => {
         .map((c) => c.score)
         .join(", ")}`;
       res.setHeader("Content-Type", "application/json");
-      res.json(
-        JSON.stringify({
-          data: `${lighthouseScores}`,
-        })
-      );
+      res.json(`${lighthouseScores}`);
       res.end();
     } catch (err) {
       res.json(err.message);
