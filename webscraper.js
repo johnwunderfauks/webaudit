@@ -25,9 +25,106 @@ const {lhr} = await lighthouse(url, {
   port: (new URL(browser.wsEndpoint())).port,
   output: 'json',
   logLevel: 'info',
+}, {
+  extends: 'lighthouse:default',
+  settings: {
+    onlyCategories: ['technical', 'content', 'experience', 'mobile'],
+  },
+  audits: [
+    // Technical
+    "is-on-https",
+    "seo/robots-txt",
+    "oopif-iframe-test-audit",
+    "dobetterweb/uses-http2",
+    "seo/http-status-code",
+    "redirects",
+    "seo/manual/structured-data",
+    "dobetterweb/dom-size",
+    "metrics/speed-index",
+    "third-party-summary",
+    "seo/canonical",
+    "seo/is-crawlable",
+    "seo/crawlable-anchors",
+
+    // Content
+    "seo/meta-description",
+    "accessibility/frame-title",
+    "accessibility/document-title",
+    "accessibility/heading-order",
+
+    // Experience
+    "unsized-images",
+    "byte-efficiency/uses-optimized-images",
+    "accessibility/image-alt",
+    "accessibility/input-image-alt",
+    "image-size-responsive",
+    "byte-efficiency/uses-responsive-images",
+    "image-aspect-ratio",
+
+    // Mobile
+    "seo/font-size",
+    "viewport",
+    "accessibility/meta-viewport",
+    "content-width",
+  ],
+  categories: {
+    technical: {
+      title: 'Technical',
+      description: '',
+      auditRefs: [
+        { id: 'is-on-https', weight: 1 },
+        { id: 'robots-txt', weight: 1 },
+        { id: 'oopif-iframe-test-audit', weight: 1 },
+        { id: 'uses-http2', weight: 1 },
+        { id: 'http-status-code', weight: 1 },
+        { id: 'redirects', weight: 1 },
+        { id: 'structured-data', weight: 0 },
+        { id: 'dom-size', weight: 1 },
+        { id: 'speed-index', weight: 1 },
+        { id: 'third-party-summary', weight: 1 },
+        { id: 'canonical', weight: 1 },
+        { id: 'is-crawlable', weight: 1 },
+        { id: 'crawlable-anchors', weight: 1 },
+      ]
+    },
+    content: {
+      title: 'Content',
+      description: '',
+      auditRefs: [
+        { id: 'meta-description', weight: 1 },
+        { id: 'frame-title', weight: 1 },
+        { id: 'document-title', weight: 1 },
+        { id: 'heading-order', weight: 1 }
+      ]
+    },
+    experience: {
+      title: 'Experience',
+      description: '',
+      auditRefs: [
+        { id: 'unsized-images', weight: 1 },
+        { id: 'uses-optimized-images', weight: 1 },
+        { id: 'image-alt', weight: 1 },
+        { id: 'input-image-alt', weight: 1 },
+        { id: 'image-size-responsive', weight: 1 },
+        { id: 'uses-responsive-images', weight: 1 },
+        { id: 'image-aspect-ratio', weight: 1 },
+      ]
+    },
+    mobile: {
+      title: 'Mobile',
+      description: '',
+      auditRefs: [
+        { id: 'font-size', weight: 1 },
+        { id: 'viewport', weight: 1 },
+        { id: 'meta-viewport', weight: 1 },
+        { id: 'content-width', weight: 1 }
+      ]
+    },
+  }
 });
 
-console.log(`Lighthouse scores: ${Object.values(lhr.categories).map(c => c.score).join(', ')}`);
+console.log(lhr);
+// console.log(`Lighthouse scores: ${Object.values(lhr.categories).map(c => c.score).join(', ')}`);
 
 await browser.close();
 })();
