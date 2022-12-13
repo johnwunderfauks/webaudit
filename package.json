@@ -1,5 +1,7 @@
 {
   "dependencies": {
+    "axios": "^1.2.1",
+    "date-fns": "^2.29.3",
     "express": "^4.18.2",
     "lighthouse": "^9.6.8",
     "puppeteer": "^19.3.0",
@@ -9,7 +11,6 @@
   "description": "This repository contains [`scrape_jobs.py`](https://github.com/realpython/materials/blob/master/web-scraping-bs4/scrape_jobs.py), which is the sample script built in the Real Python tutorial on how to [Build a Web Scraper With Requests and Beautiful Soup](https://realpython.com/beautiful-soup-web-scraper-python/).",
   "version": "1.0.0",
   "main": "index.js",
-  "devDependencies": {},
   "scripts": {
     "start": "node server/index.js"
   },
