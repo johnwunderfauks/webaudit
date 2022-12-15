@@ -10,7 +10,7 @@ const lighthouse = require("lighthouse");
 const { URL } = require("url");
 
 const { format } = require("date-fns");
-
+require('dotenv').config()
 // Have Node serve the files for our built React app
 app.use(express.static(path.resolve(__dirname, "../client/build")));
 
@@ -120,8 +120,8 @@ async function sendEmail(userEmail, userURL) {
       port: 465,
       secure: true, // true for 465, false for other ports
       auth: {
-        user: "seotest@wunderfauks.com", // generated ethereal user
-        pass: "31ibuF2%e?@c", // generated ethereal password
+        user: process.env.EMAIL_USER,"seotest@wunderfauks.com", // generated ethereal user
+        pass: process.env.EMAIL_PASSWORD, // generated ethereal password
       },
     });
 
