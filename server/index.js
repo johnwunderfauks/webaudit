@@ -116,7 +116,7 @@ async function sendEmail(userEmail, userURL) {
 
     let transporter = nodemailer.createTransport({
       pool: true,
-      host: "mail.wunderfauks.com", //smtp.ethereal.email
+      host: process.env.EMAIL_HOST, //smtp.ethereal.email
       port: 465,
       secure: true, // true for 465, false for other ports
       auth: {
