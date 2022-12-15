@@ -2,7 +2,7 @@ const path = require("path");
 const express = require("express");
 const axios = require("axios");
 const PORT = process.env.PORT || 3001;
-const nodemailer = require("nodemailer");
+
 const app = express();
 
 const puppeteer = require("puppeteer");
@@ -10,7 +10,7 @@ const lighthouse = require("lighthouse");
 const { URL } = require("url");
 
 const { format } = require("date-fns");
-require("dotenv").config();
+
 // Have Node serve the files for our built React app
 app.use(express.static(path.resolve(__dirname, "../client/build")));
 
@@ -61,9 +61,8 @@ app.get("/api", (req, res) => {
         .join(", ")}`;
 
       //To do
-      //Save results in database , done
+      //Save results in database
       //Trigger Email
-      //Build/Save PDF
       var strapiData = {
         data: {
           date_created: format(new Date(), "yyyy-MM-dd'T'HH:mm:ssXX"),
@@ -87,14 +86,12 @@ app.get("/api", (req, res) => {
         .then(function (response) {
           console.log(response.data);
           if (response.data) {
-            strapiMsg = "posted to strapi: " + response.data.data.id + "\n";
+            strapiMsg = "posted to strapi: " + response.data.id + "\n";
           }
         })
         .catch(function (error) {
           strapiMsg = "axios strapi error" + error;
         });
-
-      sendEmail(currEmail, currURL);
 
       res.setHeader("Content-Type", "application/json");
       res.json(`${strapiMsg}` + `:` + `${lighthouseScores}`);
@@ -108,51 +105,6 @@ app.get("/api", (req, res) => {
     await browser.close();
   })();
 });
-
-async function sendEmail(userEmail, userURL) {
-  try {
-    //let testAccount = await nodemailer.createTestAccount();
-    // create reusable transporter object using the default SMTP transport
-
-    let transporter = nodemailer.createTransport({
-      pool: true,
-      host: process.env.EMAIL_HOST, //smtp.ethereal.email
-      port: 465,
-      secure: true, // true for 465, false for other ports
-      auth: {
-        user: process.env.EMAIL_USER, // generated ethereal user
-        pass: process.env.EMAIL_PASSWORD, // generated ethereal password
-      },
-    });
-
-    //Verify connection
-    transporter.verify(function (error, success) {
-      if (error) {
-        console.log(error);
-      } else {
-        console.log("Server is ready to take our messages");
-      }
-    });
-
-    // send mail with defined transport object
-    let info = await transporter.sendMail({
-      from: '"SEO Tools Wunderfauks" <seotest@wunderfauks.com>', // sender address
-      to: userEmail + ", " + userEmail, // list of receivers
-      subject: "Your SEO Results for " + userURL, // Subject line
-      text: "Testing 123", // plain text body
-      html: "<b>Testing 123</b>", // html body
-    });
-
-    console.log("Message sent: %s", info.messageId);
-    // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
-
-    // Preview only available when sending through an Ethereal account
-    console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
-    // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
-  } catch (error) {
-    console.log(error);
-  }
-}
 
 app.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`);
