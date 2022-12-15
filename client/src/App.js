@@ -24,6 +24,7 @@ function App() {
       setErr("Please input email and url to receive your results");
       return;
     }
+    //Check if nodejs is down ?
     setIsLoading(true);
 
     try {
