@@ -1,3 +1,5 @@
+require("dotenv").config({ path: `.env.local`, override: true });
+console.log(process.env.SEO_AUDIT_RESULTS_URL);
 const path = require("path");
 const express = require("express");
 const axios = require("axios");
@@ -10,6 +12,9 @@ const lighthouse = require("lighthouse");
 const { URL } = require("url");
 
 const { format } = require("date-fns");
+const nodemailer = require("nodemailer");
+const PDFDocument = require("pdfkit");
+const fs = require("fs");
 
 // Have Node serve the files for our built React app
 app.use(express.static(path.resolve(__dirname, "../client/build")));
@@ -62,7 +67,9 @@ app.get("/api", (req, res) => {
 
       //To do
       //Save results in database
+      //Save PDF
       //Trigger Email
+
       var strapiData = {
         data: {
           date_created: format(new Date(), "yyyy-MM-dd'T'HH:mm:ssXX"),
@@ -73,24 +80,34 @@ app.get("/api", (req, res) => {
       };
       var strapiHeaders = {
         headers: {
-          Authorization: `Bearer 856508b10ec7546ea7c8a92ce5ad27782c9bf44e322a56da87000342809e72f5c3bb6d93a168b2282e27752cb19f95e8ce1c9723f1835b10ab48ecfe3a89cd772caeec248cc3e01a9355240a478dcae50bb898e6c7e44e43a45725ad859b6a3f3a9a23e72eb060444ef8ad557dff329fcca22479271fd08080b7efa21c4bbed9`,
+          Authorization: process.env.SEO_AUDIT_KEY,
         },
       };
+      // Create a new PDF document
+      const doc = new PDFDocument();
+      var fileName = "output.pdf";
+      // Add some text and a rectangle
+      doc.text("SEO Scores for: " + currURL + "\n");
+      doc.text(lighthouseScores);
+
+      // Save the PDF to a file
+      doc.pipe(fs.createWriteStream("./uploads/" + fileName));
+      doc.end();
+
       var strapiMsg = "";
       const strapiResults = await axios
-        .post(
-          "http://127.0.0.1:1338/api/seo-audit-results",
-          strapiData,
-          strapiHeaders
-        )
+        .post(process.env.SEO_AUDIT_RESULTS_URL, strapiData, strapiHeaders)
         .then(function (response) {
           console.log(response.data);
           if (response.data) {
             strapiMsg = "posted to strapi: " + response.data.id + "\n";
+            sendEmail(currEmail, currURL, fileName);
+          } else {
           }
         })
         .catch(function (error) {
           strapiMsg = "axios strapi error" + error;
+          console.log("strapi error ", error);
         });
 
       res.setHeader("Content-Type", "application/json");
@@ -106,7 +123,7 @@ app.get("/api", (req, res) => {
   })();
 });
 
-async function sendEmail(userEmail, userURL) {
+async function sendEmail(userEmail, userURL, pdf) {
   try {
     //let testAccount = await nodemailer.createTestAccount();
     // create reusable transporter object using the default SMTP transport
@@ -137,7 +154,13 @@ async function sendEmail(userEmail, userURL) {
       to: userEmail + ", " + userEmail, // list of receivers
       subject: "Your SEO Results for " + userURL, // Subject line
       text: "Testing 123", // plain text body
-      html: "<b>Testing 123</b>", // html body
+      html: "<b>Testing 123</b>", // html body,
+      attachments: [
+        {
+          filename: pdf,
+          path: "./uploads/" + pdf,
+        },
+      ],
     });
 
     console.log("Message sent: %s", info.messageId);
