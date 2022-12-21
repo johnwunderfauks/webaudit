@@ -27,6 +27,16 @@ const {lhr} = await lighthouse(url, {
   logLevel: 'info',
 }, {
   extends: 'lighthouse:default',
+  passes: [
+    {
+      passName: 'defaultPass',
+      gatherers: [
+        'custom-audits/gatherers/h1-elements',
+        'custom-audits/gatherers/head-elements',
+        'custom-audits/gatherers/content-elements',
+      ]
+    }
+  ],
   settings: {
     onlyCategories: ['technical', 'content', 'experience', 'mobile'],
   },
@@ -45,12 +55,21 @@ const {lhr} = await lighthouse(url, {
     "seo/canonical",
     "seo/is-crawlable",
     "seo/crawlable-anchors",
+    "custom-audits/audits/meta-og-tags",
+    "custom-audits/audits/link-to-http",
 
     // Content
     "seo/meta-description",
     "accessibility/frame-title",
     "accessibility/document-title",
     "accessibility/heading-order",
+    "custom-audits/audits/h1-tag",
+    "custom-audits/audits/meta-description-length",
+    "custom-audits/audits/meta-description-count",
+    "custom-audits/audits/document-title-length",
+    "custom-audits/audits/dead-end-page",
+    "custom-audits/audits/unsafe-links",
+    "custom-audits/audits/content-word-count",
 
     // Experience
     "unsized-images",
@@ -85,6 +104,8 @@ const {lhr} = await lighthouse(url, {
         { id: 'canonical', weight: 1 },
         { id: 'is-crawlable', weight: 1 },
         { id: 'crawlable-anchors', weight: 1 },
+        { id: 'meta-og-tags', weight: 1 },
+        { id: 'link-to-http', weight: 1 },
       ]
     },
     content: {
@@ -94,7 +115,14 @@ const {lhr} = await lighthouse(url, {
         { id: 'meta-description', weight: 1 },
         { id: 'frame-title', weight: 1 },
         { id: 'document-title', weight: 1 },
-        { id: 'heading-order', weight: 1 }
+        { id: 'heading-order', weight: 1 },
+        { id: 'h1-tag', weight: 1 },
+        { id: 'meta-description-length', weight: 1 },
+        { id: 'meta-description-count', weight: 1 },
+        { id: 'document-title-length', weight: 1 },
+        { id: 'dead-end-page', weight: 1 },
+        { id: 'unsafe-links', weight: 1 },
+        { id: 'content-word-count', weight: 1 },
       ]
     },
     experience: {
@@ -119,7 +147,7 @@ const {lhr} = await lighthouse(url, {
         { id: 'meta-viewport', weight: 1 },
         { id: 'content-width', weight: 1 }
       ]
-    },
+    }
   }
 });
 
