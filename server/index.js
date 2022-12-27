@@ -78,6 +78,14 @@ if (cluster.isMaster) {
     cluster.fork();
   });
 } else if (cluster.isWorker) {
+  // // Serve any static files
+  // app.use(express.static(path.join(__dirname, "client/build")));
+
+  // // Handle React routing, return all requests to React app
+  // app.get("*", function (req, res) {
+  //   res.sendFile(path.join(__dirname, "client/build", "index.html"));
+  // });
+
   console.log(`Worker ${process.pid} started`);
   const app = express();
   // Have Node serve the files for our built React app
