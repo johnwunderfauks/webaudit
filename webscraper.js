@@ -57,6 +57,9 @@ const {lhr} = await lighthouse(url, {
     "seo/crawlable-anchors",
     "custom-audits/audits/meta-og-tags",
     "custom-audits/audits/link-to-http",
+    "custom-audits/audits/url-length",
+    "custom-audits/audits/url-underscore",
+    "custom-audits/audits/url-dynamic-params",
 
     // Content
     "seo/meta-description",
@@ -106,6 +109,9 @@ const {lhr} = await lighthouse(url, {
         { id: 'crawlable-anchors', weight: 1 },
         { id: 'meta-og-tags', weight: 1 },
         { id: 'link-to-http', weight: 1 },
+        { id: 'url-length', weight: 1 },
+        { id: 'url-underscore', weight: 1 },
+        { id: 'url-dynamic-params', weight: 1 },
       ]
     },
     content: {
